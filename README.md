@@ -4,7 +4,6 @@ local softwareId = 15137
 local softwareSecret = 'bGlmSX0tEz0BfIObuzitna5tLMq6aynfxe3MBBmS'
 local lianzhong = {
 	ocr = function(user, pass, img, typeid)
-		-- 自适应图片对象 或 文件路径
 		local img_base64_data
 		if image.is(img) then
 			img_base64_data = img:png_data():base64_encode()
@@ -112,15 +111,14 @@ local lianzhong = {
 	end
 }
 
---上面为联众接口,下面我们开始直接调用,以kindle为例
-function tab.KindleIdentificationcode(x1, y1, x2, y2, typeid) --识别验证图片 x1,y1 图片左顶点  x2, y2 图片右底点 typeid 识别类型
+
+function getCode(x1, y1, x2, y2, typeid) 
 	local lz = lianzhong -- 加载模块
 	local user = 'terminate'
 	local pass = 'zhangbi0126..'
 	local img = screen.image(x1, y1, x2, y2)
 	local typeid = typeid
 	local Result=''
-	-- 上传图?信息同时获取结果
 	Result=lz.ocr(user, pass, img, typeid)
 	while Result == '' and Result == nil do
 		sys.log('等待验证码传输中')	
@@ -129,5 +127,3 @@ function tab.KindleIdentificationcode(x1, y1, x2, y2, typeid) --识别验证图�
 	return Result
 End
 
---接口里面封装了与打码平台的交互方式,调用时传入他认识的参数即可,截图转base64然后post上传至联众平台,联众平台解析base64后识别图片,返回JSON格式的
---string类型数据给你
