@@ -1,5 +1,4 @@
 
-联众打码平台接入
 local softwareId = 15137
 local softwareSecret = 'bGlmSX0tEz0BfIObuzitna5tLMq6aynfxe3MBBmS'
 local lianzhong = {
@@ -10,7 +9,7 @@ local lianzhong = {
 		elseif file.exists(img) then
 			img_base64_data = file.reads(img):base64_encode()
 		else
-			error('传入第三项值非图像对象或图像路径', 2)
+			error('not pic object', 2)
 		end
 		
 		local code, header, content = http.post(
@@ -44,7 +43,7 @@ local lianzhong = {
 				return false, jobj.message
 			end
 		else
-			return nil, '错误：超时'
+			return nil, 'timeout'
 		end
 	end,
 	report_error = function(user, pass, resultid)
@@ -99,21 +98,21 @@ local lianzhong = {
 		)
 		if code == 200 then
 			local jobj = json.decode(content)
-			if not jobj then return false, "无法解析的内容" end
+			if not jobj then return false, "type is wrong" end
 			if jobj.code == 0 then
 				return jobj.data
 			else
 				return false, jobj.message
 			end
 		else
-			return nil, '错误：超时'
+			return nil, 'timeout'
 		end
 	end
 }
 
 
 function getCode(x1, y1, x2, y2, typeid) 
-	local lz = lianzhong -- 加载模块
+	local lz = lianzhong 
 	local user = 'terminate'
 	local pass = 'zhangbi0126..'
 	local img = screen.image(x1, y1, x2, y2)
@@ -121,7 +120,7 @@ function getCode(x1, y1, x2, y2, typeid)
 	local Result=''
 	Result=lz.ocr(user, pass, img, typeid)
 	while Result == '' and Result == nil do
-		sys.log('等待验证码传输中')	
+		sys.log('waiting....')	
 		sys.msleep(500)
 	end
 	return Result
